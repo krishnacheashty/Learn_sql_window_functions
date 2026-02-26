@@ -57,3 +57,32 @@ VALUE (Analytics) function
 3.FIRST_VALUE(expr)
 4.LAST_VALUE(expr)
 */
+
+-- find the total sales across all orders.
+
+SELECT 
+SUM(Sales) Total_Sales
+FROM Sales.Orders
+
+-- find the total sales across all orders.
+
+SELECT 
+SUM(Sales) Total_Sales
+FROM Sales.Orders
+
+-- find the total sales for each product.
+
+SELECT 
+	ProductID,
+	SUM(Sales) Total_Sales
+FROM Sales.Orders
+GROUP BY ProductID;
+
+/*find the total sales for each product,Additionally provide details
+such orderId order date.*/
+
+SELECT 
+	ProductID,
+	OrderDate,
+	SUM(Sales) OVER(PARTITION BY ProductId,OrderDate) Total_Sales
+FROM Sales.Orders
