@@ -62,7 +62,7 @@ VALUE (Analytics) function
 
 SELECT 
 SUM(Sales) Total_Sales
-FROM Sales.Orders
+FROM Sales.Orders;
 
 -- find the total sales across all orders.
 
@@ -82,7 +82,56 @@ GROUP BY ProductID;
 such orderId order date.*/
 
 SELECT 
+	OrderID,
 	ProductID,
 	OrderDate,
 	SUM(Sales) OVER(PARTITION BY ProductId,OrderDate) Total_Sales
 FROM Sales.Orders
+
+--find the total sales for each combination of product and order status
+
+SELECT 
+	OrderID,
+	ProductID,
+	OrderStatus,
+	sales,
+	SUM(Sales) OVER(PARTITION BY ProductId,OrderStatus) SalesByProducts
+FROM Sales.Orders;
+
+-- rank each order based on their sales from highest to lower,
+--additionally provide details such order id & order date.
+
+SELECT 
+	O.OrderID,
+	O.OrderDate,
+	O.Sales,
+	RANK() OVER(ORDER BY SALES DESC) RANKSALES
+FROM Sales.Orders AS O;
+
+-- EXAMPLE FOR FRAME BOUNDARY
+SELECT 
+	O.OrderID,
+	O.OrderDate,
+	O.OrderStatus,
+	O.Sales,
+	sum(O.Sales) OVER(PARTITION BY O.OrderStatus ORDER BY SALES DESC
+	ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING) TotalSales,
+	sum(O.Sales) OVER(PARTITION BY O.OrderStatus ORDER BY SALES DESC
+	ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) TotalSales2
+FROM Sales.Orders AS O;
+
+
+--RANK customers based on total sales
+
+SELECT 
+CustomerID,
+SUM(sales) totalSales,
+RANK() OVER(ORDER BY SUM(Sales) DESC ) RankCustomers
+FROM Sales.Orders
+GROUP BY CustomerID
+
+-- here allways remember that 
+--if you do not use both side group by element then sql give you error
+
+
+
