@@ -79,7 +79,25 @@ SUM(Sales) OVER() TotalSales ,
 ROUND(CAST(Sales AS float)/SUM(Sales) OVER() *100,2) PERCENTAGEoFtOTAL,
 AVG(Sales) OVER() SalesAVG
 FROM Sales.Orders
-/*Note : dividing two integer columns produces
+/*Note : Dividing two integer columns produces
  an integer,not a decimal 
  To solve use CAST() */
+
+
+ --				task-4
+ --Find all records where sales are higher 
+ --then the average sales all orders
+
+ SELECT
+ *
+ FROM(
+	 SELECT 
+	 O.OrderID,
+	 O.Sales,
+	 AVG(O.Sales) OVER() salesAVG
+	 FROM Sales.Orders AS O
+ )t where Sales >salesAVG;
+
+
+
 
