@@ -99,5 +99,32 @@ FROM Sales.Orders
  )t where Sales >salesAVG;
 
 
+ --show the employees who have the highest salaries
+
+ SELECT
+ *
+ FROM(
+ SELECT 
+	 *,
+	 MAX(E.Salary) OVER() EmployeeHighestSalary
+	 FROM Sales.Employees AS E
+ )t WHERE salary =EmployeeHighestSalary;
+
+ --Find the deviation of each salas from the minimum and maximum sales amount
+
+ SELECT
+ O.OrderID,
+ O.OrderDate,
+ O.ProductID,
+ O.Sales,
+ MAX(Sales) OVER() HighestSales,
+ MIN(Sales) OVER() LowestSales,
+ O.Sales-MIN(Sales) OVER() DeviationFromMin,
+ MAX(Sales) OVER()-O.Sales DeviationFromMax
+ FROM Sales.Orders AS O
+
+
+ --   RUNNING & ROLLING TOTAL
+ --Tracking Current Sales with Target sales.
 
 
