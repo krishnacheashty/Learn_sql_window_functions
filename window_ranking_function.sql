@@ -21,3 +21,19 @@ FROM Sales.Orders
 
 				here n is 1,2,3,4,5.....
 				*/
+
+
+--RANK the orders based on their sales from highest to lowest
+
+
+SELECT 
+O.OrderID,
+O.ProductID,
+O.Sales,
+ROW_NUMBER() OVER(ORDER BY O.Sales DESC) RANK_SALES 
+FROM Sales.Orders AS O
+
+--Ranking is unique.Do not shear any row .
+
+
+
