@@ -43,6 +43,7 @@ FROM Sales.Orders AS O
 
 
 --RANK the orders based on their sales from highest to lowest
+--and find where are rank be shearing. 
 SELECT
 *
 FROM(
@@ -54,5 +55,93 @@ FROM(
 	ROW_NUMBER() OVER(ORDER BY O.Sales DESC) RANK_SALES ,
 	RANK() OVER(ORDER BY O.Sales DESC) Rank_sales_shearingRow 
 	FROM Sales.Orders AS O
-)t where RANK_SALES != Rank_sales_shearingRow;
+)t WHERE RANK_SALES != Rank_sales_shearingRow;
 
+
+
+					-- DENSE_RANK()
+--ASSIGN A RANK TO EACH ROW.
+-- IT HANDELES TIES.
+--IT DOSEN'T LEAVES GAPS IN RANKING.
+
+SELECT 
+	O.OrderID,
+	O.ProductID,
+	O.Sales,
+	ROW_NUMBER() OVER(ORDER BY O.Sales DESC) RANK_SALES ,
+	RANK() OVER(ORDER BY O.Sales DESC) Rank_sales_shearingRow ,
+	DENSE_RANK() OVER(ORDER BY O.Sales DESC) Rank_sales_shearingRow 
+FROM Sales.Orders AS O;
+
+
+					-- TASK 1
+--FIND the top highest sales for each product.
+SELECT
+*
+FROM(
+	SELECT 
+	OrderID,
+	ProductID,
+	Sales,
+	ROW_NUMBER() OVER(PARTITION BY ProductID ORDER BY Sales DESC) rank_sales
+FROM Sales.Orders
+)t where rank_sales =1;
+
+
+--			BOTTOM-N Analysis
+--HELP ANALYSIS THE UNDERPERFORMANCE TO MANAGE RISKS AND TO DO OPTIMIZATION
+
+
+
+--					TASK -02
+
+--Find the lowest 2 customers based on total sales.
+SELECT
+*
+FROM(
+SELECT 
+CustomerID,
+SUM(SALES) TotalSales,
+ROW_NUMBER() OVER(ORDER BY SUM(SALES)) rankSalesUnique
+FROM Sales.Orders
+GROUP BY CustomerID
+)t WHERE rankSalesUnique <=2;
+
+
+--							TASK 04
+
+-- ASSING UNIQUE idS TO THE ROWS OF THE "ORDERS ARCHIVE" TABLE
+
+SELECT
+ROW_NUMBER() OVER(ORDER BY ORDERID,OrderDate) UniqueID,
+*
+FROM Sales.OrdersArchive O
+
+-- find duplicates
+--indefy and remove duplicates rows to improve data quality
+
+
+-- ASSING UNIQUE idS TO THE ROWS OF THE "ORDERS ARCHIVE" TABLE
+-- and return without any duplicates
+SELECT
+*
+FROM(
+
+	SELECT
+	ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY CreationTime DESC) UniqueID,
+	*
+FROM Sales.OrdersArchive O
+)t WHERE  UniqueID =1;
+
+
+
+-- If you want to find which are duplicate then
+SELECT
+*
+FROM(
+
+	SELECT
+	ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY CreationTime DESC) UniqueID,
+	*
+FROM Sales.OrdersArchive O
+)t WHERE  UniqueID > 1;
