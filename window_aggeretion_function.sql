@@ -127,4 +127,18 @@ FROM Sales.Orders
  --   RUNNING & ROLLING TOTAL
  --Tracking Current Sales with Target sales.
 
+			-- Task 04 moving average --
+-- calculate moiving average of sales for each product over time.
+
+SELECT 
+O.CustomerID,
+O.ProductID,
+O.OrderDate,
+O.Sales,
+O.OrderID,
+AVG(O.Sales) OVER(PARTITION BY O.ProductID ) JY,
+AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate) JY
+--AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate ROWS BETWEEN  CURRENT ROW AND 1 FOLLOWING) MovingAVG
+FROM Sales.Orders AS O
+
 
