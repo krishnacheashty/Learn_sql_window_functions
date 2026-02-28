@@ -141,4 +141,17 @@ AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate) JY
 --AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate ROWS BETWEEN  CURRENT ROW AND 1 FOLLOWING) MovingAVG
 FROM Sales.Orders AS O
 
+---						TASK 05 ROLLING TOTAL
+-- calculate moiving average of sales for each product over time AND
+--Including only thr next order.
 
+SELECT 
+O.CustomerID,
+O.ProductID,
+O.OrderDate,
+O.Sales,
+O.OrderID,
+--AVG(O.Sales) OVER(PARTITION BY O.ProductID ) JY,
+--AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate) JY
+AVG(O.Sales) OVER(PARTITION BY O.ProductID ORDER BY O.OrderDate ROWS BETWEEN  CURRENT ROW AND 1 FOLLOWING) RollingAVG
+FROM Sales.Orders AS O
