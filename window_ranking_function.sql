@@ -36,4 +36,23 @@ FROM Sales.Orders AS O
 --Ranking is unique.Do not shear any row .
 
 
+					-- RANK () --
+--ASSIGN A RANK TO EACH ROW.
+-- IT HANDELES TIES.
+--IT LEAVES GAPS IN RANKING.
+
+
+--RANK the orders based on their sales from highest to lowest
+SELECT
+*
+FROM(
+
+	SELECT 
+	O.OrderID,
+	O.ProductID,
+	O.Sales,
+	ROW_NUMBER() OVER(ORDER BY O.Sales DESC) RANK_SALES ,
+	RANK() OVER(ORDER BY O.Sales DESC) Rank_sales_shearingRow 
+	FROM Sales.Orders AS O
+)t where RANK_SALES != Rank_sales_shearingRow;
 
