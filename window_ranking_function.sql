@@ -146,18 +146,7 @@ FROM(
 FROM Sales.OrdersArchive O
 )t WHERE  UniqueID > 1;
 
-SELECT
 
-*,
-CONCAT(DISTRANK*100, '%') Distrank
-FROM(
-SELECT
-	P.Product,
-	P.ProductID,
-	P.Price,
-	CUME_DIST() OVER(ORDER BY Price DESC) DISTRANK
-FROM Sales.Products AS P
-)t WHERE DISTRANK <= .4
 
 
 				-- NTILL ()
@@ -195,3 +184,15 @@ FROM Sales.Orders AS O
 
 
 --find ther products that fall within the highest 40% of prices
+SELECT
+
+*,
+CONCAT(DISTRANK*100, '%') Distrank
+FROM(
+SELECT
+	P.Product,
+	P.ProductID,
+	P.Price,
+	CUME_DIST() OVER(ORDER BY Price DESC) DISTRANK
+FROM Sales.Products AS P
+)t WHERE DISTRANK <= .4
