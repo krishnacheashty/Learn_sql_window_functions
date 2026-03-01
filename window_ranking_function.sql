@@ -145,3 +145,38 @@ FROM(
 	*
 FROM Sales.OrdersArchive O
 )t WHERE  UniqueID > 1;
+
+
+
+
+				-- NTILL ()
+SELECT
+O.CustomerID,
+O.OrderID,
+O.Sales,
+NTILE(1) OVER(ORDER BY Sales DESC) oneBucket,
+NTILE(2) OVER(ORDER BY Sales DESC) twoBucket,
+NTILE(3) OVER(ORDER BY Sales DESC) threeBucket,
+NTILE(4) OVER(ORDER BY Sales DESC) threeBucket,
+NTILE(5) OVER(ORDER BY Sales DESC) threeBucket
+FROM Sales.Orders AS O
+
+
+--					task 05
+--segment all orders into 3 categories : high ,medium and low sales
+SELECT
+*,
+CASE BUCKETS
+	WHEN 1 THEN 'HIGH'
+	WHEN 2 THEN 'MEDIUM'
+	ELSE 'LOW'
+	END
+
+FROM(   
+	SELECT
+	O.CustomerID,
+	O.OrderID,
+	O.Sales,
+	NTILE(3) OVER(ORDER BY Sales DESC) BUCKETS
+FROM Sales.Orders AS O
+) t 
