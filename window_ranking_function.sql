@@ -146,7 +146,18 @@ FROM(
 FROM Sales.OrdersArchive O
 )t WHERE  UniqueID > 1;
 
+SELECT
 
+*,
+CONCAT(DISTRANK*100, '%') Distrank
+FROM(
+SELECT
+	P.Product,
+	P.ProductID,
+	P.Price,
+	CUME_DIST() OVER(ORDER BY Price DESC) DISTRANK
+FROM Sales.Products AS P
+)t WHERE DISTRANK <= .4
 
 
 				-- NTILL ()
@@ -163,7 +174,7 @@ FROM Sales.Orders AS O
 
 
 --					task 05
---segment all orders into 3 categories : high ,medium and low sales
+--Segment all orders into 3 categories : high ,medium and low sales
 SELECT
 *,
 CASE BUCKETS
@@ -180,3 +191,7 @@ FROM(
 	NTILE(3) OVER(ORDER BY Sales DESC) BUCKETS
 FROM Sales.Orders AS O
 ) t 
+
+
+
+--find ther products that fall within the highest 40% of prices
