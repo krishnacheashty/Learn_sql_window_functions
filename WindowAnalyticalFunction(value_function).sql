@@ -40,3 +40,25 @@ MONTH(OrderDate)
  --			LEAD(expr,offset,default)
 
  -- access a value from the next row within a window
+ /*
+ customer retention analysis
+ Measure customer's behavior and loyalty to help businesses build 
+ strong relationships with customers.
+ */
+
+ -- In order to analyze customer loyalty,
+ -- rank customes based on the avarage days bewteen their order.
+ SELECT
+ CustomerID,
+ AVG(DiffDays) avgDay,
+ RANK() OVER(ORDER BY COALESCE(AVG(DiffDays),9999)) RankInCustomer
+ FROM(
+	 SELECT 
+	 O.OrderID,
+	 O.CustomerID,
+	 O.OrderDate CurrentDay,
+	 LEAD(O.OrderDate) OVER(PARTITION BY CustomerID ORDER BY OrderDate) nextOrderDay,
+	 DATEDIFF(day,O.OrderDate,LEAD(O.OrderDate) OVER(PARTITION BY CustomerID ORDER BY OrderDate)) DiffDays
+	 FROM Sales.Orders AS O
+	 )t
+	 GROUP BY CustomerID
