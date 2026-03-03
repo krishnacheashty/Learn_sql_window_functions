@@ -66,3 +66,20 @@ MONTH(OrderDate)
 
 	 --FIRST_VALUE()->Access a value from the firdt row within a window.
 	 --syntex--> FIRST_VALUE() OVE(ORDER BY)
+
+
+							-- TASK -3
+		--Find lowest and highest fro each product
+		-- Finf the difference in sales between the current and the lowest sales
+SELECT
+		O.OrderID,
+		O.ProductID,
+		O.Sales,
+		FIRST_VALUE(O.Sales) OVER(PARTITION BY ProductID ORDER BY O.Sales) LowestValue,
+		LAST_VALUE(O.Sales) OVER(PARTITION BY ProductID ORDER BY O.Sales 
+		ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) HighistValue,
+		O.Sales - FIRST_VALUE(O.Sales) OVER(PARTITION BY ProductID ORDER BY O.Sales) SalesDeffirent
+		--FIRST_VALUE(O.Sales) OVER(PARTITION BY ProductID ORDER BY O.Sales DESC) HighistValue2
+FROM Sales.Orders AS O
+
+--This is a compare analysis
