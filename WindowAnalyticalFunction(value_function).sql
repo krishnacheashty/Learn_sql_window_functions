@@ -62,3 +62,7 @@ MONTH(OrderDate)
 	 FROM Sales.Orders AS O
 	 )t
 	 GROUP BY CustomerID
+
+
+	 --FIRST_VALUE()->Access a value from the firdt row within a window.
+	 --syntex--> FIRST_VALUE() OVE(ORDER BY)
